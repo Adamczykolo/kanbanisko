@@ -11,6 +11,7 @@ app.get("/", function (request, response) {
         else {
             response.write(data);
         }
+        response.end();
     })
 })
 app.listen(10000, function () {
