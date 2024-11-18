@@ -1,12 +1,15 @@
 {
   "name": "kanbanisko",
   "version": "1.0.0",
-  "main": "server.js",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node app.js"
   },
   "author": "",
   "license": "ISC",
-  "description": "kanban"
+  "description": "kanban",
+  "dependencies": {
+    "express": "^4.21.1"
+  }
 }
