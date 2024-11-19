@@ -4,16 +4,31 @@ var http = require('http');
 
 function onRequest(request, response) {
     response.writeHead(200, { 'Content-Type': 'text/html' });
-    fs.readFile('./index.html', null, function (error, data) {
-        if (error) {
-            response.writeHead(404);
-            response.write('File not found');
-        } else {
-            response.write(data);
-        }
-        response.end();
-    })
 
+    // Query to fetch the first user's name
+    client.query(`SELECT name FROM users LIMIT 1`, (err, res) => {
+        if (err) {
+            response.writeHead(500);
+            response.write('Database error');
+            response.end();
+            return;
+        }
+
+        const name = res.rows[0]?.name || 'Guest';
+
+        // Read and modify the HTML file
+        fs.readFile('./index.html', 'utf8', function (error, data) {
+            if (error) {
+                response.writeHead(404);
+                response.write('File not found');
+            } else {
+                // Replace placeholder with actual name
+                const updatedData = data.replace('$name', name);
+                response.write(updatedData);
+            }
+            response.end();
+        });
+    });
 }
 
 http.createServer(onRequest).listen(3000);
@@ -27,15 +42,4 @@ const client = new Client({
 })
 
 client.connect();
-
-client.query(`SELECT * FROM users`, (err, res) => {
-    if (!err) {
-        console.log(res.rows);
-    }
-    else {
-        console.log(err.message);
-    }
-    client.end;
-})
-
 
