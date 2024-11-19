@@ -6,7 +6,7 @@ function onRequest(request, response) {
     response.writeHead(200, { 'Content-Type': 'text/html' });
 
     // Query to fetch the first user's name
-    client.query(`SELECT name FROM users LIMIT 1`, (err, res) => {
+    client.query(`SELECT name FROM users`, (err, res) => {
         if (err) {
             response.writeHead(500);
             response.write('Database error');
@@ -14,7 +14,7 @@ function onRequest(request, response) {
             return;
         }
 
-        const name = res.rows[0]?.name || 'Guest';
+        const name = res.rows[0]?.name;
 
         // Read and modify the HTML file
         fs.readFile('./index.html', 'utf8', function (error, data) {
@@ -31,7 +31,9 @@ function onRequest(request, response) {
     });
 }
 
-http.createServer(onRequest).listen(3000);
+http.createServer(onRequest).listen(3000, () => {
+    console.log("serwer zapierdala na http://localhost:3000")
+});
 
 const client = new Client({
     host: "localhost",
