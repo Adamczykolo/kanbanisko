@@ -1,38 +1,21 @@
-const express = require("express");
-const fs = require('fs');
-const { Sequelize } = require('sequelize');
-require("dotenv").config();
+const { Client } = require('pg')
 
-var app = express()
-
-const sequelize = new Sequelize(
-    process.env.DB_URL,
-    {
-        dialect: "postgres",
-        protocol: "postgres",
-        dialectOptions: {
-            ssl: {
-                requrie: true,
-                rejectUnauthorized: false,
-            },
-        },
-        logging: false,
-    });
-
-sequelize.sync().then(() => { console.log("Database connected") }).catch((err) => { console.log(err) });
-
-app.get("/", function (request, response) {
-    fs.readFile('index.html', null, function (error, data) {
-        if (error) {
-            response.writeHead(404);
-            response.write("file not found!");
-        }
-        else {
-            response.write(data);
-        }
-        response.end();
-    })
+const client = new Client({
+    host: "localhost",
+    user: "postgres",
+    port: "5432",
+    password: "zaq1@WSX",
+    database: "kanban"
 })
-app.listen(10000, function () {
-    console.log("Started application on port %d", 10000)
-});
+
+client.connect();
+
+client.query(`SELECT * FROM users`, (err, res) => {
+    if (!err) {
+        console.log(res.rows);
+    }
+    else {
+        console.log(err.message);
+    }
+    client.end;
+})
