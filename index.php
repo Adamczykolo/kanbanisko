@@ -1,38 +1,39 @@
 <?php
-    session_start();
-    if(isset($_POST['login']) && isset($_POST['pass']) ){
-        $login = $_POST['login'];
-        $pass = $_POST['pass'];
-        
-        $polaczenie = new mysqli('localhost', username: 'root', '', 'users');
+session_start();
 
-        $query = "SELECT login FROM uzytkownicy WHERE pass LIKE '$pass' AND login LIKE '$login'";
-        
-        
-        $wynik = $polaczenie->query($query);
-        if($wynik->num_rows==1){
-            $_SESSION['logowanie']=$login;
+if (isset($_POST['login']) && isset($_POST['pass'])) {
+    $login = $_POST['login'];
+    $pass = $_POST['pass'];
 
-        }else{
-            echo "Błędny login lub hasło";
-        }
+    $db_pass = "zaq1@WSX";
+
+    // PostgreSQL connection
+    $connection_string = "host=localhost dbname=kanban user=postgres password=$db_pass";
+    $polaczenie = pg_connect($connection_string);
+    if (!$polaczenie) {
+        die("Connection failed");
     }
 
+    // Query to prevent SQL injection
+    $result = pg_query_params($polaczenie, "SELECT username FROM users WHERE password = $1 AND username = $2", array($pass, $login));
     
+    if (pg_num_rows($result) === 1) {
+        $_SESSION['logowanie'] = $login;
+    } else {
+        echo "Błędny login lub hasło";
+    }
+}
 
-    if(isset($_SESSION['login'])){
-        echo "jesteś zalogowany";
-        
-    }else {
-        ?>
-        <form action="logowaniebaza.php" method="post">
-    <input type="text" name= "login">
-    <input type="password" name= "pass">
-    <input type="submit" name= "zaloguj">
+if (isset($_SESSION['logowanie'])) {
+    echo "Jesteś zalogowany";
+    
+} else {
+    ?>
+    <form action="panel.php" method="post">
+        <input type="text" name="login">
+        <input type="password" name="pass">
+        <input type="submit" name="zaloguj">
     </form>
     <?php
-    }
-
+}
 ?>
-
-
