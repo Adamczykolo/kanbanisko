@@ -1,0 +1,13 @@
+I TURA
+    1. logout powinien terminować sesje
+    2. nawigacja z helo name
+    3. panel boczny z lista projektow
+    4. pulpit z 3 obiektami (TODO INPROGRESS DONE)
+    5. Lista projektów wyświetlana dla zalogowanego użtkownika (tylko te do kt ma dostep)
+    6. Możliwość przeklikiwania pomiędzy projektami
+
+
+
+
+II TURA
+    1. Logika z dodawniem i modyfikowaniem pulpitów
