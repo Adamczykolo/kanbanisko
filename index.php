@@ -1,3 +1,7 @@
+<?php
+session_start();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -9,46 +13,57 @@
 </head>
 
 <body>
-
 </body>
 
 </html>
 
 <?php
-session_start();
+
+$db_pass = "zaq1@WSX";
+$connection_string = "host=localhost dbname=kanban user=postgres password=$db_pass";
+$polaczenie = pg_connect($connection_string);
 
 if (isset($_POST['login']) && isset($_POST['pass'])) {
     $login = $_POST['login'];
     $pass = $_POST['pass'];
 
-    $db_pass = "zaq1@WSX";
-
     // PostgreSQL connection
-    $connection_string = "host=localhost dbname=kanban user=postgres password=$db_pass";
-    $polaczenie = pg_connect($connection_string);
     if (!$polaczenie) {
         die("Connection failed");
     }
 
     $query = pg_query(
         $polaczenie,
-        "SELECT username FROM users WHERE password = '$pass' AND username = '$login'"
+        "SELECT username, id FROM users WHERE password = '$pass' AND username = '$login'"
     );
 
     if (pg_num_rows($query) === 1) {
-        $_SESSION['logowanie'] = $login; // Store username in session
-        header("Location: index.php");   // Redirect to prevent resubmission
+        $user = pg_fetch_assoc($query); // Fetch the user's data
+        $_SESSION['logowanie'] = $user['username']; // Store username in session
+        $_SESSION['user_id'] = $user['id'];         // Store user ID in session
+        header("Location: index.php");             // Redirect to prevent resubmission
         exit;
     } else {
         echo "Błędny login lub hasło";
     }
 }
 
+// TU PISZEMY WSZYSTKO PO ZALOGOWANIU!!!!!
 if (isset($_SESSION['logowanie'])) {
-    echo "Hello, " . $_SESSION['logowanie'] . "! Welcome to your dashboard.";
-?>
-    <button class="logout">LOGOUT</button>
-<?php
+    echo "Hello, " . $_SESSION['logowanie'] . "! Welcome to your dashboard.<br>";
+    $user_id = $_SESSION['user_id'];
+    $projects_query = pg_query($polaczenie, "SELECT name FROM projects WHERE owner_id = $user_id");
+
+    echo "<table border='1'>";
+
+
+    while ($row = pg_fetch_assoc($projects_query)) {
+        echo "<tr>";
+        echo "<td>" . $row['name'] . "</td>";
+        echo "</tr>";
+    }
+
+    echo "</table>";
 } else {
 ?>
     <form action="index.php" method="post">
