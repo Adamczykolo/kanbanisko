@@ -7,6 +7,7 @@ session_start();
 
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="style.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
     <script>
@@ -90,50 +91,72 @@ session_start();
     }
 
     if (isset($_SESSION['logowanie'])) {
-        echo "Hello, " . $_SESSION['logowanie'] . "! Welcome to your dashboard.<br>";
+
+    ?>
+        <div class="navbar">
+            <div class="greeting">Hello, <?php echo htmlspecialchars($_SESSION['logowanie']); ?>!</div>
+            <form method="POST" action="index.php">
+                <input type="hidden" name="logout" value="1">
+                <button type="submit">Log Out</button>
+            </form>
+        </div>
+        <?php
 
         $user_id = $_SESSION['user_id'];
 
         // Display projects
         $projects_query = pg_query($polaczenie, "SELECT id, name FROM projects WHERE owner_id = $user_id");
+        ?>
+        <div class="sidebar">
+            <h2>Your Projects </h2>
+            <?php
 
-        echo "<h2>Your Projects</h2>";
-        echo "<table border='1'>";
-        while ($project = pg_fetch_assoc($projects_query)) {
-            echo "<tr>";
-            echo "<td><a href='#' onclick='fetchStatuses(" . $project['id'] . ")'>" . htmlspecialchars($project['name']) . "</a></td>";
-            echo "</tr>";
-        }
-        echo "</table>";
+            echo "<table border='1'>";
+            while ($project = pg_fetch_assoc($projects_query)) {
+                echo "<tr>";
+                echo "<td><a href='#' onclick='fetchStatuses(" . $project['id'] . ")'>" . htmlspecialchars($project['name']) . "</a></td>";
+                echo "</tr>";
+            }
+            echo "</table>";
+            ?>
+        </div>
+        <div class="content">
+            <?php
+            // Section to display statuses
+            echo "<h2>Project Statuses</h2>";
+            echo "<div id='statuses'><p>Select a project to view its statuses.</p></div>";
 
-        // Section to display statuses
-        echo "<h2>Project Statuses</h2>";
-        echo "<div id='statuses'><p>Select a project to view its statuses.</p></div>";
-
-        // Form to add statuses
-        echo "<h2>Add a Status to a Project</h2>";
-        echo '<form id="addStatusForm">
+            // Form to add statuses
+            echo "<h2>Add a Status to a Project</h2>";
+            echo '<form id="addStatusForm">
             <label for="projectSelect">Select Project:</label>
             <select id="projectSelect" name="project_id">';
-        $projects_query = pg_query($polaczenie, "SELECT id, name FROM projects WHERE owner_id = $user_id");
-        while ($project = pg_fetch_assoc($projects_query)) {
-            echo '<option value="' . $project['id'] . '">' . htmlspecialchars($project['name']) . '</option>';
-        }
-        echo '</select>
+            $projects_query = pg_query($polaczenie, "SELECT id, name FROM projects WHERE owner_id = $user_id");
+            while ($project = pg_fetch_assoc($projects_query)) {
+                echo '<option value="' . $project['id'] . '">' . htmlspecialchars($project['name']) . '</option>';
+            }
+            echo '</select>
             <br>
             <label for="statusName">Status Name:</label>
             <input type="text" id="statusName" name="status_name" required>
             <br>
             <button type="button" onclick="addStatus()">Add Status</button>
         </form>';
-        echo '<div id="addStatusMessage"></div>';
+            echo '<div id="addStatusMessage"></div>';
+
+            ?>
+        </div>
+    <?php
     } else {
+
     ?>
-        <form action="index.php" method="post">
-            <input type="text" name="login" placeholder="Login">
-            <input type="password" name="pass" placeholder="Password">
-            <input type="submit" name="zaloguj" value="Log In">
-        </form>
+        <div class="content">
+            <form action="index.php" method="post">
+                <input type="text" name="login" placeholder="Login">
+                <input type="password" name="pass" placeholder="Password">
+                <input type="submit" name="zaloguj" value="Log In">
+            </form>
+        </div>
     <?php
     }
     ?>
