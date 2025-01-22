@@ -1,7 +1,7 @@
 I TURA
-    1. logout powinien terminować sesje
-    2. nawigacja z helo name
-    3. panel boczny z lista projektow 
+    1. [DONE] logout powinien terminować sesje
+    2. [DONE] nawigacja z helo name
+    3. [DONE] panel boczny z lista projektow 
 
     
     4. [DONE] Możliwość dodawania statusu do projektu
@@ -13,4 +13,5 @@ II TURA
     2. wypozycjonowanie wszystkich elementów
     3. dodawanie zawartości do tasków (tytuł, komentarze, opis)
     4. CSS
+    5. Tworzenie nowych projektów
 

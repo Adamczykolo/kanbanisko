@@ -288,7 +288,7 @@ if (session_status() === PHP_SESSION_NONE) {
             <div class="greeting">Hello, <?php echo htmlspecialchars($_SESSION['logowanie']); ?>!</div>
             <form method="POST" action="index.php">
                 <input type="hidden" name="logout" value="1">
-                <button type="submit">Log Out</button>
+                <button name="logout" type="submit">Log Out</button>
             </form>
         </div>
         <div class="container">
@@ -372,6 +372,11 @@ if (session_status() === PHP_SESSION_NONE) {
             </form>
         </div>
     <?php
+    } if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['logout'])) {
+        session_unset();
+        session_destroy();
+        header("Location: index.php");
+        exit;
     }
     ?>
 </body>
