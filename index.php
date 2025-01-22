@@ -364,7 +364,8 @@ if (session_status() === PHP_SESSION_NONE) {
     <?php
     } else {
     ?>
-        <div class="content">
+        <div class="login-box">
+            <h2>Login</h2>
             <form action="index.php" method="post">
                 <input type="text" name="login" placeholder="Login" required>
                 <input type="password" name="pass" placeholder="Password" required>
